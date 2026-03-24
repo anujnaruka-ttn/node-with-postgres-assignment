@@ -1,6 +1,8 @@
 const { 
     addStudentToDb, 
-    getStudentsFromDb 
+    getStudentsFromDb, 
+    updateStudentGradeInDbByStudentId,
+    deleteStudentFromDbByStudentId
 } = require("../services/serveStudentDb");
 const { 
     validationError, 
@@ -73,7 +75,7 @@ const updateStudentGrade = async (req,res) => {
 
         const { updatedGrade } = req.body;
 
-        const { studentId } = req.params;
+        const { id: studentId } = req.params;
 
         if(!studentId) return validationError(res,'Student Id needed');
 
@@ -94,7 +96,30 @@ const updateStudentGrade = async (req,res) => {
 
     }
 };
-const deleteStudent = () => {};
+const deleteStudent = async (req,res) => {
+
+    try {
+        
+        const { id: studentId } = req.params;
+
+        if(!studentId) return validationError(res,'Student Id needed');
+
+        const deletedStudent = await deleteStudentFromDbByStudentId(studentId);
+
+        return success(
+            res,
+            `Student ${deletedStudent?.student_name} deleted successfully`,
+            204
+        )
+
+        
+    } catch (err) {
+        
+        return serverError(res,err?.message);
+
+    }
+
+};
 
 module.exports = {
     addStudent,

@@ -2,16 +2,17 @@ const { query } = require("../config/db")
 const { 
     INSERT_STUDENT_TABLE, 
     GET_ALL_STUDENTS, 
-    UPDATE_STUDENT_GRADE 
+    UPDATE_STUDENT_GRADE, 
+    DELETE_STUDENT
 } = require("../queries/studentQuery")
 
 const addStudentToDb = async (studentDataToBeAdded) => {
 
     const {
-        student_name,
-        student_email,
+        studentName: student_name,
+        studentEmail: student_email,
         grade,
-        student_note
+        studentNote: student_note
     } = studentDataToBeAdded;
 
     const result = await query(
@@ -45,8 +46,19 @@ const updateStudentGradeInDbByStudentId = async (studentId, gradeToUpdateWith) =
     return result.rows[0];
 }
 
+const deleteStudentFromDbByStudentId = async (studentId) => {
+    
+    const result = await query(
+        DELETE_STUDENT,
+        [studentId]
+    );
+
+    return result.rows[0];
+}
+
 module.exports = {
     addStudentToDb,
     getStudentsFromDb,
-    updateStudentGradeInDbByStudentId
+    updateStudentGradeInDbByStudentId,
+    deleteStudentFromDbByStudentId
 }
